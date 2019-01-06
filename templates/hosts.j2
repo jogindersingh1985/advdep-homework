@@ -1,0 +1,39 @@
+[OSEv3:children]
+lb
+masters
+etcd
+nodes
+nfs
+
+[lb]
+loadbalancer1.{{ hostvars[inventory_hostname]['ansible_local']['ansible_guid']['guid'] }}.internal
+
+[masters]
+master1.{{ hostvars[inventory_hostname]['ansible_local']['ansible_guid']['guid'] }}.internal
+master2.{{ hostvars[inventory_hostname]['ansible_local']['ansible_guid']['guid'] }}.internal
+master3.{{ hostvars[inventory_hostname]['ansible_local']['ansible_guid']['guid'] }}.internal
+
+[etcd]
+master1.{{ hostvars[inventory_hostname]['ansible_local']['ansible_guid']['guid'] }}.internal
+master2.{{ hostvars[inventory_hostname]['ansible_local']['ansible_guid']['guid'] }}.internal
+master3.{{ hostvars[inventory_hostname]['ansible_local']['ansible_guid']['guid'] }}.internal
+
+[nodes]
+## These are the masters and etcd 
+master1.{{ hostvars[inventory_hostname]['ansible_local']['ansible_guid']['guid'] }}.internal openshift_node_group_name='node-config-master' openshift_node_problem_detector_install=true
+master2.{{ hostvars[inventory_hostname]['ansible_local']['ansible_guid']['guid'] }}.internal openshift_node_group_name='node-config-master' openshift_node_problem_detector_install=true
+master3.{{ hostvars[inventory_hostname]['ansible_local']['ansible_guid']['guid'] }}.internal openshift_node_group_name='node-config-master' openshift_node_problem_detector_install=true
+
+## These are infranodes
+infranode1.{{ hostvars[inventory_hostname]['ansible_local']['ansible_guid']['guid'] }}.internal openshift_node_group_name='node-config-infra' openshift_node_problem_detector_install=true
+infranode2.{{ hostvars[inventory_hostname]['ansible_local']['ansible_guid']['guid'] }}.internal openshift_node_group_name='node-config-infra' openshift_node_problem_detector_install=true
+
+## These are regular nodes
+node1.{{ hostvars[inventory_hostname]['ansible_local']['ansible_guid']['guid'] }}.internal openshift_node_group_name='node-config-compute' openshift_node_problem_detector_install=true
+node2.{{ hostvars[inventory_hostname]['ansible_local']['ansible_guid']['guid'] }}.internal openshift_node_group_name='node-config-compute' openshift_node_problem_detector_install=true
+node3.{{ hostvars[inventory_hostname]['ansible_local']['ansible_guid']['guid'] }}.internal openshift_node_group_name='node-config-compute' openshift_node_problem_detector_install=true
+node4.{{ hostvars[inventory_hostname]['ansible_local']['ansible_guid']['guid'] }}.internal openshift_node_group_name='node-config-compute' openshift_node_problem_detector_install=true
+
+
+[nfs]
+support1.{{ hostvars[inventory_hostname]['ansible_local']['ansible_guid']['guid'] }}.internal
