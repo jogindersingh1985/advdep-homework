@@ -1,4 +1,46 @@
 ---
+- name: Prepare localhost environment to setup openshift cluster
+  hosts: localhost
+  tasks:
+    - name: Ensure fact.d folder exists
+      file:
+        path: /etc/ansible/facts.d
+        recurse: true
+        state: directory
+      tags:
+        - pre_tasks
+        - setup_fact
+
+    - name: Set GUID fact
+      template:
+        src: ansible_guid.fact.j2
+        dest: /etc/ansible/facts.d/ansible_guid.fact 
+        mode: 0755
+      tags:
+        - pre_tasks
+        - setup_fact
+
+    - name: Re run setup to use custom facts
+      setup: ~
+      tags:
+        - pre_tasks
+        - setup_fact
+
+    - name: Generate inventory file
+      template:
+        src: hosts.j2
+        dest: hosts
+      tags:
+        - pre_tasks
+        - setup_fact
+        - inventory
+
+    - meta: refresh_inventory
+      tags:
+        - pre_tasks
+        - setup_fact
+        - inventory
+
 - name: Prepare GUID environment variable across all hosts
   hosts: all
   tasks:
@@ -21,9 +63,12 @@
     - name: required packages are present
       yum:
         name:
-          - ????
-          - ????
+          - atomic-openshift-clients
+          - openshift-ansible
         state: present
+      tags:
+        - pre_tasks
+        - packages
 
 - name: Generate Inventory Hosts File
   hosts: localhost
