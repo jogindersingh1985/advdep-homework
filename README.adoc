@@ -8,9 +8,9 @@ The person grading the assignment will
 * launch a new homework environment
 * clone a repo
 
-=== sudo su -
-=== git clone https://github.com/jogindersingh1985/advdep-homework
-=== cd advdep-homework
+$ sudo su -
+$ git clone https://github.com/jogindersingh1985/advdep-homework
+$ cd advdep-homework
 
 * execute a command
 ````
