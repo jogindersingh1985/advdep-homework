@@ -6,18 +6,20 @@ a fully automated deployment of OpenShift.
 The person grading the assignment will 
 
 * launch a new homework environment
+
+     https://labs.opentlc.com/service/explorer
+
 * clone a repo
 
      $ sudo su -
-
      $ git clone https://github.com/jogindersingh1985/advdep-homework
-
      $ cd advdep-homework
 
 * execute a command
 
      To Install: 
           ansible-playbook homework.yaml
+
      To UnInstall:
           ansible-playbook homework-remove.yaml
 
@@ -28,6 +30,3 @@ The person grading the assignment will
      https://loadbalancer.$GUID.example.opentlc.com/console/catalog
 
 Good luck!  And try to have fun!
-
-
-
