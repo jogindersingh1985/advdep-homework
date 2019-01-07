@@ -11,6 +11,15 @@
         - pre_tasks
         - setup_fact
 
+    - name: Ensure group_vars folder exists
+      file:
+        path: /etc/ansible/group_vars
+        recurse: true
+        state: directory
+      tags:
+        - pre_tasks
+        - setup_fact
+
     - name: Set GUID fact
       template:
         src: ansible_guid.fact.j2
@@ -29,7 +38,17 @@
     - name: Generate inventory file
       template:
         src: hosts.j2
-        dest: hosts
+        dest: /etc/ansible/hosts
+      tags:
+        - pre_tasks
+        - setup_fact
+        - inventory
+
+    - name: Generate inventory file
+      fetch:
+        src: group_vars/OSEv3
+        dest: /etc/ansible/group_vars/OSEv3
+        flat: true
       tags:
         - pre_tasks
         - setup_fact
@@ -46,6 +65,8 @@
   tasks:
     - name: All GUID env variable
       shell: export GUID=`hostname | cut -d"." -f2`; echo "export GUID=$GUID" >> $HOME/.bashrc
+      tags:
+        - pre_tasks
 
 - name: Verify Installation and Configuration of Docker
   hosts: nodes
@@ -56,6 +77,11 @@
 - name: Verify NFS Shared Volumes on Hosts
   hosts: nfs
   tasks:
+  - name: Check NFS server
+    shell: exportfs
+    tags:
+      - nfs
+
 
 - name: Install packages and config auth
   hosts: localhost
@@ -70,23 +96,28 @@
         - pre_tasks
         - packages
 
-- name: Generate Inventory Hosts File
-  hosts: localhost
-  tasks:
-    - name: Generate Inventory script
-      script: /root/ocp_advanced_deployment_homework/scripts/generate_inventory.sh
+#- name: Generate Inventory Hosts File
+#  hosts: localhost
+#  tasks:
+#    - name: Generate Inventory script
+#      script: scripts/generate_inventory.sh
 
 - name: Execute the openshift-ansible prerequisites
-  import_playbook: ???
+  import_playbook: /usr/share/ansible/openshift-ansible/playbooks/prerequisites.yml
 
 - name: Execute the openshift-ansible Deployer
-  import_playbook: ???
+  import_playbook: /usr/share/ansible/openshift-ansible/playbooks/deploy_cluster.yml
 
 - name: Verify OpenShift Cluster
   hosts: masters[0]
   tasks:
     - name: copy the .kube directory from master1 to your bastion
-    ????
+      fetch:
+        src: /root/.kube/config
+        dest: /root/.kube/config
+        flat: true
+      tags:
+        - post_install
 
 - name: Post installation configuration
   hosts: localhost
@@ -98,14 +129,28 @@
   hosts: nfs
   tasks:
     - name:
-      script: ????
+      script: scripts/create_pvs.sh
     - name: Restarting NFS Server...
       shell: systemctl restart nfs-server
+      tags:
+        - nfs
+
 
 - name: Create 25 definitions files for PVs 5G size
   hosts: localhost
+  tasks:
+    - name:
+      script: scripts/pvs_5Gsize.sh
+      tags:
+        - nfs
 
 - name: Create 25 definitions files for PVs 10G size
+  hosts: localhost
+  tasks:
+    - name:
+      script: scripts/pvs_10Gsize.sh
+      tags:
+        - nfs
 
 - name: Create all PVs from definitions files
 
@@ -117,7 +162,9 @@
   hosts: localhost
   tasks:
     - name: jenkins setup
-      script: ???
+      script: scripts/nodejs_mongo_app.sh
+      tags:
+        - jenkins
 
 - name: HPA configuration on production deployment of openshift-tasks
   hosts: localhost
@@ -129,5 +176,3 @@
 
 - name: Setup the environment for Alpha and Beta clients
 
-
-  ....

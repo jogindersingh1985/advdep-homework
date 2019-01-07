@@ -6,7 +6,7 @@ nodes
 nfs
 
 [lb]
-loadbalancer1.{{ hostvars[inventory_hostname]['ansible_local']['ansible_guid']['guid'] }}.internal
+loadbalancer.{{ hostvars[inventory_hostname]['ansible_local']['ansible_guid']['guid'] }}.internal
 
 [masters]
 master1.{{ hostvars[inventory_hostname]['ansible_local']['ansible_guid']['guid'] }}.internal
