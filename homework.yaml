@@ -2,35 +2,11 @@
 - name: Prepare localhost environment to setup openshift cluster
   hosts: localhost
   tasks:
-    - name: Ensure fact.d folder exists
-      file:
-        path: /etc/ansible/facts.d
-        recurse: true
-        state: directory
-      tags:
-        - pre_tasks
-        - setup_fact
-
     - name: Ensure group_vars folder exists
       file:
         path: /etc/ansible/group_vars
         recurse: true
         state: directory
-      tags:
-        - pre_tasks
-        - setup_fact
-
-    - name: Set GUID fact
-      template:
-        src: ansible_guid.fact.j2
-        dest: /etc/ansible/facts.d/ansible_guid.fact 
-        mode: 0755
-      tags:
-        - pre_tasks
-        - setup_fact
-
-    - name: Re run setup to use custom facts
-      setup: ~
       tags:
         - pre_tasks
         - setup_fact
@@ -54,6 +30,12 @@
         - setup_fact
         - inventory
 
+    - name: Re run setup to use custom facts
+      setup: ~
+      tags:
+        - pre_tasks
+        - setup_fact
+
     - meta: refresh_inventory
       tags:
         - pre_tasks
@@ -64,7 +46,7 @@
   hosts: all
   tasks:
     - name: All GUID env variable
-      shell: export GUID=`hostname | cut -d"." -f2`; echo "export GUID=$GUID" >> $HOME/.bashrc
+      shell: if [ "X$GUID" != "X$(hostname | cut -d"." -f2)" ]; then export GUID=`hostname | cut -d"." -f2`; echo "export GUID=$GUID" >> $HOME/.bashrc; fi
       tags:
         - pre_tasks
 
@@ -119,11 +101,25 @@
       tags:
         - post_install
 
+- name: Verify OpenShift Cluster
+  hosts: masters
+  tasks:
+    - name: Add user Openshift Cluster
+      shell: htpasswd -b /etc/origin/master/htpasswd admin redhat01
+      tags:
+        - post_install
+
 - name: Post installation configuration
   hosts: localhost
   tasks:
     - name: make sure you are system:dmin
       shell: oc whoami | grep system:admin
+      tags:
+        - post_install
+    - name: Add cluster-admin policy to user
+      shell: oc adm policy add-cluster-role-to-user cluster-admin admin
+      tags:
+        - post_install
 
 - name: Create PVs for Users
   hosts: nfs
@@ -139,7 +135,7 @@
 - name: Create 25 definitions files for PVs 5G size
   hosts: localhost
   tasks:
-    - name:
+    - name: Running for 5GB
       script: scripts/pvs_5Gsize.sh
       tags:
         - nfs
@@ -147,16 +143,31 @@
 - name: Create 25 definitions files for PVs 10G size
   hosts: localhost
   tasks:
-    - name:
+    - name: Running for 10GB
       script: scripts/pvs_10Gsize.sh
       tags:
         - nfs
 
 - name: Create all PVs from definitions files
+  hosts: localhost
+  tasks:
+    - name: "Creating PVs from the files.."
+      shell: "cat /root/pvs/* | oc create -f -"
+      tags:
+        - nfs
 
 - name: Fix NFS Persistent Volume Recycling
+  hosts: nodes
+  tasks:
+    - name: "pull the recycler image"
+      shell: docker pull registry.access.redhat.com/openshift3/ose-recycler:latest
+    - name: "tag the recycler image for specific version"
+      shell: docker tag registry.access.redhat.com/openshift3/ose-recycler:latest registry.access.redhat.com/openshift3/ose-recycler:v3.11.43
+  tags:
+    - fixnfs
+    - nfs
 
-- name: Smoke Test
+#- name: Smoke Test
 
 - name: Jenkins Setup
   hosts: localhost

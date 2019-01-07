@@ -45,9 +45,9 @@ openshift_enable_unsupported_configurations: true
 openshift_master_api_port: 443
 openshift_master_console_port: 443
 
-openshift_master_cluster_hostname: loadbalancer1.{{ hostvars[inventory_hostname]['ansible_local']['ansible_guid']['guid'] }}.internal
-openshift_master_cluster_public_hostname: loadbalancer.{{ hostvars[inventory_hostname]['ansible_local']['ansible_guid']['guid'] }}.example.opentlc.com
-openshift_master_default_subdomain: apps.{{ hostvars[inventory_hostname]['ansible_local']['ansible_guid']['guid'] }}.example.opentlc.com
+openshift_master_cluster_hostname: loadbalancer.{{ ansible_nodename.split(".")[1] }}.internal
+openshift_master_cluster_public_hostname: loadbalancer.{{ ansible_nodename.split(".")[1] }}.example.opentlc.com
+openshift_master_default_subdomain: apps.{{ ansible_nodename.split(".")[1] }}.example.opentlc.com
 openshift_master_overwrite_named_certificates: true
 
 ###########################################################################
@@ -89,7 +89,7 @@ openshift_metrics_install_metrics: true
 
 openshift_metrics_storage_kind: nfs
 openshift_metrics_storage_access_modes: ['ReadWriteOnce']
-openshift_metrics_storage_host: support1.{{ hostvars[inventory_hostname]['ansible_local']['ansible_guid']['guid'] }}.internal
+openshift_metrics_storage_host: support1.{{ ansible_nodename.split(".")[1] }}.internal
 openshift_metrics_storage_nfs_directory: /srv/nfs
 openshift_metrics_storage_nfs_options: '*(rw,root_squash)'
 openshift_metrics_storage_volume_name: metrics
@@ -130,7 +130,7 @@ openshift_logging_install_eventrouter: true
 
 openshift_logging_storage_kind: nfs
 openshift_logging_storage_access_modes: ['ReadWriteMany']
-openshift_logging_storage_host: support1.{{ hostvars[inventory_hostname]['ansible_local']['ansible_guid']['guid'] }}.internal
+openshift_logging_storage_host: support1.{{ ansible_nodename.split(".")[1] }}.internal
 openshift_logging_storage_nfs_directory: /srv/nfs
 openshift_logging_storage_nfs_options: '*(rw,root_squash)'
 openshift_logging_storage_volume_name: logging
@@ -159,7 +159,7 @@ openshift_hosted_registry_enforcequota: true
 
 openshift_hosted_registry_storage_kind: nfs
 openshift_hosted_registry_storage_access_modes: ['ReadWriteOnce']
-openshift_hosted_registry_storage_host: support1.{{ hostvars[inventory_hostname]['ansible_local']['ansible_guid']['guid'] }}.internal
+openshift_hosted_registry_storage_host: support1.{{ ansible_nodename.split(".")[1] }}.internal
 openshift_hosted_registry_storage_nfs_directory: /srv/nfs
 openshift_hosted_registry_storage_nfs_options: '*(rw,root_squash)'
 openshift_hosted_registry_storage_volume_name: registry

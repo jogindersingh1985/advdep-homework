@@ -3,8 +3,9 @@
 export GUID=`hostname|awk -F. '{print $2}'`
 export volsize="10Gi"
 
-mkdir /root/pvs
-for volume in pv{1..200} ; do
+mkdir /root/pvs 2> /dev/null
+
+for volume in pv{26..50} ; do
 cat << EOF > /root/pvs/${volume}
 {
   "apiVersion": "v1",
@@ -27,6 +28,3 @@ cat << EOF > /root/pvs/${volume}
 EOF
 echo "Created def file for ${volume}";
 done;
-
-cat /root/pvs/* | oc create -f -
-exit 0

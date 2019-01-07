@@ -1,0 +1,14 @@
+---
+- import_playbook: /usr/share/ansible/openshift-ansible/playbooks/adhoc/uninstall.yml
+  environment:
+    ANSIBLE_CONFIG: "/usr/share/ansible/openshift-ansible/ansible.cfg"
+
+- hosts: nodes
+  tasks:
+    - name: 'Delete the /etc/origin directories on all nodes to clean up left over junk'
+      shell: rm -rf /etc/origin
+
+- hosts: nfs
+  tasks:
+    - name: 'Make sure to clean out any NFS Directories'
+      shell: rm -rf /srv/nfs/*
