@@ -12,3 +12,8 @@
   tasks:
     - name: 'Make sure to clean out any NFS Directories'
       shell: rm -rf /srv/nfs/*
+
+- hosts: localhost
+  tasks:
+    - name: 'Make sure to clean out any NFS Directories'
+      shell: rm -rf /root/pvs/

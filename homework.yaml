@@ -10,6 +10,7 @@
       tags:
         - pre_tasks
         - setup_fact
+        - inventory
 
     - name: Generate inventory file
       template:
@@ -21,10 +22,9 @@
         - inventory
 
     - name: Generate inventory file
-      fetch:
-        src: group_vars/OSEv3
+      template:
+        src: OSEv3
         dest: /etc/ansible/group_vars/OSEv3
-        flat: true
       tags:
         - pre_tasks
         - setup_fact
@@ -105,7 +105,7 @@
   hosts: masters
   tasks:
     - name: Add user Openshift Cluster
-      shell: htpasswd -b /etc/origin/master/htpasswd admin redhat01
+      shell: htpasswd -b /etc/origin/master/htpasswd admin r3dh4t1!
       tags:
         - post_install
 
