@@ -7,11 +7,23 @@ The person grading the assignment will
 
 * launch a new homework environment
 * clone a repo
+````
+sudo su -
+git clone https://github.com/jogindersingh1985/advdep-homework
+cd advdep-homework
+````
 * execute a command
+````
+To Install: ansible-playbook homework.yaml
+To UnInstall ansible-playbook homework-remove.yaml
+````
 * examine the output through log files
-* exmaine the deployed OpenShift to ensure that all aspects of the homework were 
-deployed properly.
-
+````
+````
+* exmaine the deployed OpenShift to ensure that all aspects of the homework were deployed properly.
+````
+https://loadbalancer.$GUID.example.opentlc.com/console/catalog
+````
 
 Good luck!  And try to have fun!
 
