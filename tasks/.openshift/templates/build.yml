@@ -76,7 +76,7 @@ parameters:
 - description: Git source URI for application
   name: SOURCE_REPOSITORY_URL
   required: true
-  value: https://github.com/redhat-cop/container-pipelines.git
+  value: https://github.com/jogindersingh1985/advdep-homework.git
 - description: Git branch/tag reference
   name: SOURCE_REPOSITORY_REF
   value: "master"

@@ -183,13 +183,13 @@
       tags:
         - jenkins
 
-- name: HPA configuration on production deployment of openshift-tasks
-  hosts: localhost
-  tasks:
+#- name: HPA configuration on production deployment of openshift-tasks
+#  hosts: localhost
+#  tasks:
 
-- name: Creation of users for Alpha and Beta clients
+#- name: Creation of users for Alpha and Beta clients
 
-- name: Assigning labels to the users according to its group
+#- name: Assigning labels to the users according to its group
 
-- name: Setup the environment for Alpha and Beta clients
+#- name: Setup the environment for Alpha and Beta clients
 
