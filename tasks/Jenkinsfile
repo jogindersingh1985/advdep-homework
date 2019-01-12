@@ -17,9 +17,13 @@ openshift.withCluster() {
   env.APP_NAME = "${APP_NAME}".replaceAll("-pipeline",'')
   echo "Starting Pipeline for ${APP_NAME}..."
   env.BUILD = "${env.NAMESPACE}"
-  env.DEV = "${APP_NAME}-dev"
-  env.STAGE = "${APP_NAME}-test"
-  env.PROD = "${APP_NAME}-prod"
+  echo "Using BUILD Project Name: ${BUILD}"
+  env.DEV = "${"${env.NAMESPACE}".replaceAll(/-build$/,'')}".plus("-dev")
+  echo "Using DEV Project Name: ${DEV}"
+  env.TEST = "${"${env.NAMESPACE}".replaceAll(/-build$/,'')}".plus("-test")
+  echo "Using TEST Project Name: ${TEST}"
+  env.PROD = "${"${env.NAMESPACE}".replaceAll(/-build$/,'')}".plus("-prod")
+  echo "Using PROD Project Name: ${PROD}"
 }
 
 pipeline {
@@ -95,13 +99,13 @@ pipeline {
 
     stage('Promote from Dev to Test') {
       steps {
-        tagImage(sourceImageName: env.APP_NAME, sourceImagePath: env.DEV, toImagePath: env.STAGE)
+        tagImage(sourceImageName: env.APP_NAME, sourceImagePath: env.DEV, toImagePath: env.TEST)
       }
     }
 
     stage ('Verify Deployment to Test') {
       steps {
-        verifyDeployment(projectName: env.STAGE, targetApp: env.APP_NAME)
+        verifyDeployment(projectName: env.TEST, targetApp: env.APP_NAME)
       }
     }
 
@@ -115,7 +119,7 @@ pipeline {
 
     stage('Promote from Test to Prod') {
       steps {
-        tagImage(sourceImageName: env.APP_NAME, sourceImagePath: env.STAGE, toImagePath: env.PROD)
+        tagImage(sourceImageName: env.APP_NAME, sourceImagePath: env.TEST, toImagePath: env.PROD)
       }
     }
 
