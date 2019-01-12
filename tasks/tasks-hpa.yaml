@@ -1,0 +1,15 @@
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: tasks-hpa
+  namespace: tasks-prod
+spec:
+  maxReplicas: 5
+  minReplicas: 2
+  scaleTargetRef:
+    apiVersion: apps.openshift.io/v1
+    kind: DeploymentConfig
+    name: openshift-tasks
+    subresource: scale
+  cpuUtilization:  
+    targetCPUUtilizationPercentage: 80
