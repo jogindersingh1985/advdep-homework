@@ -55,6 +55,9 @@
   tasks:
     - name: docker restart
       shell: systemctl restart docker
+      tags:
+      - dockerrestart
+
 
 - name: Verify NFS Shared Volumes on Hosts
   hosts: nfs
@@ -86,9 +89,14 @@
 
 - name: Execute the openshift-ansible prerequisites
   import_playbook: /usr/share/ansible/openshift-ansible/playbooks/prerequisites.yml
+  tags:
+    - install_ocp
+    - install_pre
 
 - name: Execute the openshift-ansible Deployer
   import_playbook: /usr/share/ansible/openshift-ansible/playbooks/deploy_cluster.yml
+  tags:
+    - install_ocp
 
 - name: Verify OpenShift Cluster
   hosts: masters[0]
@@ -166,8 +174,6 @@
   tags:
     - fixnfs
     - nfs
-
-#- name: Smoke Test
 
 - name: Jenkins Setup
   hosts: localhost
