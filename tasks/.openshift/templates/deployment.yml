@@ -82,6 +82,10 @@ objects:
           - containerPort: 8080
             name: http
             protocol: TCP
+          resources:
+            limits:
+              cpu: 200m
+              memory: 512Mi
           readinessProbe:
             exec:
               command:
