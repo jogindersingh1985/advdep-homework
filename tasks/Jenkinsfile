@@ -12,7 +12,7 @@ openshift.withCluster() {
   env.POM_FILE = env.BUILD_CONTEXT_DIR ? "${env.BUILD_CONTEXT_DIR}/pom.xml" : "pom.xml"
   echo "using POM_FILE ${POM_FILE}..."
   echo "Working for JOB_NAME ${JOB_NAME}..."
-  env.APP_NAME = "${JOB_NAME}".replaceAll(/*build-/,'')
+  env.APP_NAME = "${JOB_NAME}".replaceAll(/.*build-/,'')
   echo "Working for TEMP_APP_NAME ${APP_NAME}"
   env.APP_NAME = "${APP_NAME}".replaceAll("-pipeline",'')
   echo "Starting Pipeline for ${APP_NAME}..."
