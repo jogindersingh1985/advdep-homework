@@ -1,0 +1,4 @@
+APPLICATION_NAME=tasks
+NAMESPACE=tasks-build
+SOURCE_REPOSITORY_URL=https://github.com/redhat-cop/container-pipelines.git
+SOURCE_REPOSITORY_REF=master
