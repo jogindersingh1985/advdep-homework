@@ -10,7 +10,7 @@ openshift.withCluster() {
   env.NAMESPACE = openshift.project()
   echo "Starting in NAMESPACE ${NAMESPACE}..."
   env.POM_FILE = env.BUILD_CONTEXT_DIR ? "${env.BUILD_CONTEXT_DIR}/pom.xml" : "pom.xml"
-  echo "using POM_FILE ${POM_FILE} from BUILD_CONTEXT_DIR ${BUILD_CONTEXT_DIR}..."
+  echo "using POM_FILE ${POM_FILE}..."
   env.APP_NAME = "${JOB_NAME}".replaceAll(/-build.*/, '')
   echo "Working for JOB_NAME ${JOB_NAME}..."
   echo "Starting Pipeline for ${APP_NAME}..."
