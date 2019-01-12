@@ -1,4 +1,4 @@
-APPLICATION_NAME=tasks
+APPLICATION_NAME=openshift-tasks
 NAMESPACE=tasks-prod
 SA_NAMESPACE=tasks-build
 READINESS_RESPONSE=status.:.UP
