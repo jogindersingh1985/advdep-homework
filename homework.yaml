@@ -187,21 +187,45 @@
 #  hosts: localhost
 #  tasks: scripts/nodejs_mongo_app.sh is having the HPA command. 
 
-#- name: Creation of users for Alpha and Beta clients
-#  hosts: localhost
-#  tasks: scripts/multitenancy.sh is having the useradd command.
+- name: Creation of users for Alpha and Beta clients
+  hosts: localhost
+  tasks: scripts/multitenancy.sh is having the useradd command.
+  tasks:
+    - name: Multitenancy Script
+      script: scripts/multitenancy.sh
+      tags:
+        - multitenancy
 
 - name: Creation of projects for Alpha and Beta clients
   hosts: localhost
   tasks:
     - name: Create alpha project
-      shell: oc new-project alpha
+      shell: oc new-project alpha --display-name='Alpha Corp'
+    - name: Set node-selector for alpha project
+      shell: oc patch namespace alpha -p '{"metadata":{"annotations":{"openshift.io/node-selector":"client=alpha"}}}'
     - name: Create beta project
-      shell: oc new-project beta
+      shell: oc new-project beta --display-name='Beta Corp'
+    - name: Set node-selector for beta project
+      shell: oc patch namespace beta -p '{"metadata":{"annotations":{"openshift.io/node-selector":"client=beta"}}}'
+    - name: Create common project
+      shell: oc new-project common --display-name='Common Corp'
+    - name: Set node-selector for common project
+      shell: oc patch namespace common -p '{"metadata":{"annotations":{"openshift.io/node-selector":"client=common"}}}'
   tags:
-    - create_projects
+    - multitenancy
 
-#- name: Assigning labels to the users according to its group
+- name: Assigning labels to the users according to its group
+    hosts: localhost
+  tasks:
+    - name: Adding user labels 
+      shell: scripts/set_labels.sh
+    - name: Adding alpha-grp to alpha project
+      shell: oc adm policy add-role-to-group admin alpha-grp -n alpha
+    - name: Adding beta-grp to beta project
+      shell: oc adm policy add-role-to-group admin beta-grp -n beta
+  tags:
+    - multitenancy
+
 
 #- name: Setup the environment for Alpha and Beta clients
 

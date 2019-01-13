@@ -7,8 +7,11 @@ ansible masters -m shell -a 'htpasswd -b /etc/origin/master/htpasswd andrew r3dh
 ansible masters -m shell -a 'htpasswd -b /etc/origin/master/htpasswd brian r3dh4t1!'
 ansible masters -m shell -a 'htpasswd -b /etc/origin/master/htpasswd betty r3dh4t1!'
 
-oc adm groups new alpha amy andrew
-oc adm groups new beta brian betty
+oc adm groups new alpha-grp amy andrew
+oc adm groups new beta-grp brian betty
+oc annotate clusterrolebinding.rbac self-provisioners 'rbac.authorization.kubernetes.io/autoupdate=false' --overwrite
+oc patch clusterrole self-provisioner -p '{ "metadata": { "annotations": { "openshift.io/reconcile-protect": "true" } } }'
+oc adm policy remove-cluster-role-from-group self-provisioner alpha-grp beta-grp || oc adm policy remove-cluster-role-from-group self-provisioner system:authenticated:oauth
 
 for OCP_USERNAME in amy andrew brian betty; do
 
