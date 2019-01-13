@@ -204,6 +204,25 @@
       shell:  /usr/local/bin/master-restart api 
     - name: Restart Controller
       shell: /usr/local/bin/master-restart controllers 
+    - name: Wait for APIs to become available
+      command: oc get --raw /apis/{{ item }}/v1
+      register: openshift_apis
+      until: openshift_apis.rc == 0
+      with_items: 
+      - "apps.openshift.io"
+      - "authorization.openshift.io"
+      - "build.openshift.io"
+      - "image.openshift.io"
+      - "network.openshift.io"
+      - "oauth.openshift.io"
+      - "project.openshift.io"
+      - "quota.openshift.io"
+      - "route.openshift.io"
+      - "security.openshift.io"
+      - "template.openshift.io"
+      - "user.openshift.io"
+      retries: 60
+      delay: 5
       tags:
         - multitenancy
         - restartapi
@@ -245,13 +264,13 @@
   hosts: localhost
   tasks:
     - name: Adding node1 labels
-      shell: oc label node node1.8b7c.internal client=alpha --overwrite
+      shell: oc label node node1.$(hostname | cut -d"." -f2).internal client=alpha --overwrite
     - name: Adding node2 labels
-      shell: oc label node node2.8b7c.internal client=common --overwrite
+      shell: oc label node node2.$(hostname | cut -d"." -f2).internal client=common --overwrite
     - name: Adding node3 labels
-      shell: oc label node node3.8b7c.internal client=beta --overwrite
+      shell: oc label node node3.$(hostname | cut -d"." -f2).internal client=beta --overwrite
     - name: Adding node4 labels
-      shell: oc label node node4.8b7c.internal client=common --overwrite
+      shell: oc label node node4.$(hostname | cut -d"." -f2).internal client=common --overwrite
   tags:
     - multitenancy
     - node-labels
