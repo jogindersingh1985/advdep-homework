@@ -189,12 +189,24 @@
 
 - name: Creation of users for Alpha and Beta clients
   hosts: localhost
-  tasks: scripts/multitenancy.sh is having the useradd command.
   tasks:
     - name: Multitenancy Script
       script: scripts/multitenancy.sh
       tags:
         - multitenancy
+
+- name: Creation of users for Alpha and Beta clients
+  hosts: masters
+  tasks:
+    - name: Restart atomic-openshift-node
+      shell: systemctl restart atomic-openshift-node
+    - name: Restart API
+      shell:  /usr/local/bin/master-restart api 
+    - name: Restart Controller
+      shell: /usr/local/bin/master-restart controllers 
+      tags:
+        - multitenancy
+        - restartapi
 
 - name: Creation of projects for Alpha and Beta clients
   hosts: localhost
@@ -213,9 +225,10 @@
       shell: oc patch namespace common -p '{"metadata":{"annotations":{"openshift.io/node-selector":"client=common"}}}'
   tags:
     - multitenancy
+    - create-project
 
 - name: Assigning labels to the users according to its group
-    hosts: localhost
+  hosts: localhost
   tasks:
     - name: Adding user labels 
       shell: scripts/set_labels.sh
@@ -225,7 +238,20 @@
       shell: oc adm policy add-role-to-group admin beta-grp -n beta
   tags:
     - multitenancy
+    - user-labels
 
 
-#- name: Setup the environment for Alpha and Beta clients
-
+- name: Setup the environment for Alpha and Beta clients
+  hosts: localhost
+  tasks:
+    - name: Adding node1 labels
+      shell: oc label node node1.8b7c.internal client=alpha
+    - name: Adding node2 labels
+      shell: oc label node node2.8b7c.internal client=common
+    - name: Adding node3 labels
+      shell: oc label node node3.8b7c.internal client=beta
+    - name: Adding node4 labels
+      shell: oc label node node4.8b7c.internal client=common
+  tags:
+    - multitenancy
+    - node-labels
