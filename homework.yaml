@@ -245,13 +245,13 @@
   hosts: localhost
   tasks:
     - name: Adding node1 labels
-      shell: oc label node node1.8b7c.internal client=alpha
+      shell: oc label node node1.8b7c.internal client=alpha --overwrite
     - name: Adding node2 labels
-      shell: oc label node node2.8b7c.internal client=common
+      shell: oc label node node2.8b7c.internal client=common --overwrite
     - name: Adding node3 labels
-      shell: oc label node node3.8b7c.internal client=beta
+      shell: oc label node node3.8b7c.internal client=beta --overwrite
     - name: Adding node4 labels
-      shell: oc label node node4.8b7c.internal client=common
+      shell: oc label node node4.8b7c.internal client=common --overwrite
   tags:
     - multitenancy
     - node-labels
