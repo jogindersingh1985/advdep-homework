@@ -185,9 +185,21 @@
 
 #- name: HPA configuration on production deployment of openshift-tasks
 #  hosts: localhost
-#  tasks:
+#  tasks: scripts/nodejs_mongo_app.sh is having the HPA command. 
 
 #- name: Creation of users for Alpha and Beta clients
+#  hosts: localhost
+#  tasks: scripts/multitenancy.sh is having the useradd command.
+
+- name: Creation of projects for Alpha and Beta clients
+  hosts: localhost
+  tasks:
+    - name: Create alpha project
+      shell: oc new-project alpha
+    - name: Create beta project
+      shell: oc new-project beta
+  tags:
+    - create_projects
 
 #- name: Assigning labels to the users according to its group
 
